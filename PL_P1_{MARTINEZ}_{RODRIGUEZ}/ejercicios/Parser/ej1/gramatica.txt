@@ -1,0 +1,7 @@
+Definicion gramatica
+
+
+Terminales = ( ID = ; NUM)
+
+asignacion := ID = NUM
+programa := asignacion | asignacion ; programa
