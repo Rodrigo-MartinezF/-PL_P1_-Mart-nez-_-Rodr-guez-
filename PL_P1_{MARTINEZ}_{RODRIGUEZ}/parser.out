@@ -1,0 +1,79 @@
+Created by PLY version 3.11 (http://www.dabeaz.com/ply)
+
+Unused terminals:
+
+    BINARY
+    HEXNUM
+    ID
+    INTEGER
+    NONE
+    OCTAL
+    REAL
+    SCIENTIFIC
+
+Grammar
+
+Rule 0     S' -> inicio
+Rule 1     inicio -> ajson
+Rule 2     ajson -> LLAVE_APERTURA pares_clave_valor LLAVE_CIERRE
+Rule 3     ajson -> empty
+Rule 4     pares_clave_valor -> par_clave_valor
+Rule 5     pares_clave_valor -> par_clave_valor COMA pares_clave_valor
+Rule 6     pares_clave_valor -> empty
+Rule 7     par_clave_valor -> clave DOS_PUNTOS valor
+Rule 8     clave -> STRING_WITH_QUOTES
+Rule 9     clave -> STRING_WITHOUT_QUOTES
+Rule 10    valor -> NUMERO
+Rule 11    valor -> STRING_WITH_QUOTES
+Rule 12    valor -> BOOLEANO
+Rule 13    valor -> NULO
+Rule 14    valor -> operacion_comparacion
+Rule 15    valor -> ajson
+Rule 16    operacion_comparacion -> NUMERO IGUAL NUMERO
+Rule 17    operacion_comparacion -> NUMERO MAYOR NUMERO
+Rule 18    operacion_comparacion -> NUMERO MAYOR_IGUAL NUMERO
+Rule 19    operacion_comparacion -> NUMERO MENOR NUMERO
+Rule 20    operacion_comparacion -> NUMERO MENOR_IGUAL NUMERO
+Rule 21    BOOLEANO -> TRUE
+Rule 22    BOOLEANO -> FALSE
+Rule 23    empty -> <empty>
+
+Terminals, with rules where they appear
+
+BINARY               : 
+COMA                 : 5
+DOS_PUNTOS           : 7
+FALSE                : 22
+HEXNUM               : 
+ID                   : 
+IGUAL                : 16
+INTEGER              : 
+LLAVE_APERTURA       : 2
+LLAVE_CIERRE         : 2
+MAYOR                : 17
+MAYOR_IGUAL          : 18
+MENOR                : 19
+MENOR_IGUAL          : 20
+NONE                 : 
+OCTAL                : 
+REAL                 : 
+SCIENTIFIC           : 
+STRING_WITHOUT_QUOTES : 9
+STRING_WITH_QUOTES   : 8 11
+TRUE                 : 21
+error                : 
+
+Nonterminals, with rules where they appear
+
+BOOLEANO             : 12
+NULO                 : 13
+NUMERO               : 10 16 16 17 17 18 18 19 19 20 20
+ajson                : 1 15
+clave                : 7
+empty                : 3 6
+inicio               : 0
+operacion_comparacion : 14
+par_clave_valor      : 4 5
+pares_clave_valor    : 2 5
+valor                : 7
+

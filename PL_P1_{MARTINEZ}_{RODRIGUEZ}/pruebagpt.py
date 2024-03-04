@@ -85,7 +85,7 @@ data = """
 identifier1 _identifier2
 "string without quotes" "string with \"quotes\""
 TRUE True true
-FALSE False false
+FL False false
 NULL null
 == > >= < <=
 { } : ,
