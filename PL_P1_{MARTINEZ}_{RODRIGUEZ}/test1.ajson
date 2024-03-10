@@ -1,0 +1,8 @@
+
+{
+    "clave1": 5 < 6,
+    clave2: "valor2",
+    clave3: TR,
+    clave3: tr,
+    "clave4": NULL
+}

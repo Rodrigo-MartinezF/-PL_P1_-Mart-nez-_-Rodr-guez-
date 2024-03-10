@@ -1,187 +1,86 @@
+import sys
 import ply.lex as lex
 
-# Lista de palabras reservadas 
-reserved = {
-    'TR': 'TRUE',
-    'FL' : 'FALSE',
-    'NULL': 'NONE'
-}
+class lexerAJSON:
+    # Lista de palabras reservadas
 
+    def __init__(self) -> None:
+        self.lexer = lex.lex(module=self)
+        self.reserved = (
+        "tr",
+        "fl",
+        "NULL",)
+        
+    reserved = {
+        'tr': 'TRUE',
+        'fl': 'FALSE',
+        'null': 'NULL',
+    }
 
-# Lista de nombres de tokens
-tokens = [
-    'INTEGER', 'REAL', 'SCIENTIFIC', 'BINARY', 'OCTAL', 'HEXNUM',
-    'STRING_WITH_QUOTES', 'STRING_WITHOUT_QUOTES','IGUAL', 'MAYOR',
-    'MAYOR_IGUAL', 'MENOR', 'MENOR_IGUAL', 'LLAVE_APERTURA', 'LLAVE_CIERRE', 'DOS_PUNTOS',
-    'COMA' ,'ID', 
-    
-] + list(reserved.values())
+    # Lista de nombres de tokens
+    tokens = [
+        'INTEGER', 'REAL', 'SCIENTIFIC', 'BINARY', 'OCTAL', 'HEXNUM',
+        'STRING_WITH_QUOTES', 'STRING_WITHOUT_QUOTES', 'IGUAL', 'MAYOR',
+        'MAYOR_IGUAL', 'MENOR', 'MENOR_IGUAL', 'LLAVE_APERTURA', 'LLAVE_CIERRE', 'DOS_PUNTOS',
+        'COMA',
+    ] + list(reserved.values())
 
-# Reglas de expresiones regulares para tokens simples
-def t_REAL(t):
-    r'[+-]?\b\d+\.\d+\b|\b\d+\.\b'
-    t.value = float(t.value)
-    return t
-
-def t_INTEGER(t):
-    r'[+-]?\b\d+\b'
-    t.value = int(t.value)
-    return t
-
-def t_SCIENTIFIC(t):
-    r'[+-]?\b\d*\.?\d+(e|E)[+-]?\d+\b'
-    t.value = float(t.value)
-    return t
-
-def t_BINARY(t):
-    r'\b0[bB][01]+\b'
-    t.value = int(t.value, 2)
-    return t
-
-def t_OCTAL(t):
-    r'\b0[0-7]+\b'
-    t.value = int(t.value, 8)
-    return t
-
-def t_HEXNUM(t):
-    r'\b0[xX][0-9a-fA-F]+\b'
-    t.value = int(t.value, 16)
-    return t
-
-# Regla para cadenas de caracteres entre comillas
-def t_STRING_WITH_QUOTES(t):
-    r'\".*?\"'
-    t.value = t.value[1:-1]  # Quita las comillas del principio y del final
-    return t
+    def create_reserved_map(self):
+        reserved_map = {}
+        for r in self.reserved:
+            reserved_map[r.lower()] = r
+            reserved_map[r.upper()] = r
+        return reserved_map
 
 
 
-# Regla para cadenas de caracteres sin comillas
-def t_STRING_WITHOUT_QUOTES(t):
-    r'[a-zA-Z_][a-zA-Z_0-9]*'
-    if t.value.upper() in reserved:
-        t.type = reserved[t.value.upper()]
-    return t
-    
-# Regla para caráteres de comparación 
+    # Reglas de expresiones regulares para tokens simples
+    t_REAL = r'[+-]?\b\d+\.\d+\b|\b\d+\.\b'
+    t_INTEGER = r'[+-]?\b\d+\b'
+    t_SCIENTIFIC = r'[+-]?\b\d*\.?\d+(e|E)[+-]?\d+\b'
+    t_BINARY = r'\b0[bB][01]+\b'
+    t_OCTAL = r'\b0[0-7]+\b'
+    t_HEXNUM = r'\b0[xX][0-9a-fA-F]+\b'
+    t_STRING_WITH_QUOTES = r'\".*?\"'
+    t_IGUAL = r'=='
+    t_MAYOR_IGUAL = r'>='
+    t_MENOR_IGUAL = r'<='
+    t_MAYOR = r'>'
+    t_MENOR = r'<'
+    t_LLAVE_APERTURA = r'\{'
+    t_LLAVE_CIERRE = r'\}'
+    t_DOS_PUNTOS = r':'
+    t_COMA = r','
 
-def t_IGUAL(t):
-    r'=='
-    return t
+    # Reglas para identificadores y palabras reservadas
+    def t_STRING_WITHOUT_QUOTES(self, t):
+        r'[a-zA-Z_][a-zA-Z_0-9]*'
+        t.value = t.value.lower()  # Normalize to lowercase
+        t.type = lexerAJSON.reserved.get(t.value, 'STRING_WITHOUT_QUOTES')  # Check for reserved words
+        return t
 
-def t_MAYOR_IGUAL(t):
-    r'>='
-    return t
+    # Regla de seguimiento de números de línea
+    def t_newline(self, t):
+        r'\n+'
+        t.lexer.lineno += len(t.value)
 
-def t_MENOR_IGUAL(t):
-    r'<='
-    return t
+    # Caracteres ignorados (espacios y tabulaciones)
+    t_ignore = ' \t'
 
-def t_MAYOR(t):
-    r'>'
-    return t
-
-def t_MENOR(t):
-    r'<'
-    return t
-
-
-# Regla para caráteres delimitadores
-def t_LLAVE_APERTURA(t):
-    r'\{'
-    return t
-
-def t_LLAVE_CIERRE(t):
-    r'\}'
-    return t
-
-def t_DOS_PUNTOS(t):
-    r':'
-    return t
-
-def t_COMA(t):
-    r','
-    return t 
-
-# Expresiones regulares para palabras reservadas
-
-def t_ID(t):
-    r'[a-zA-Z_][a-zA-Z_0-9]*'
-    if t.value.upper() in reserved:
-        t.type = reserved[t.value.upper()]
-    return t
-
-def t_TRUE(t):
-    r'TRUE|True|true'
-    return t
-
-def t_FALSE(t):
-    r'FALSE|False|false'
-    return t
-
-def t_NULO(t):
-    r'NONE|none'
-    return t
-
-# Regla de seguimiento de números de línea
-def t_newline(t):
-    r'\n+'
-    t.lexer.lineno += len(t.value)
+    # Manejo de errores
+    def t_error(self, t):
+        print(f"Carácter ilegal '{t.value[0]}'")
+        t.lexer.skip(1)
 
 
+    def test(self, data):
+        self.lexer.input(data)
+        for token in self.lexer:
+            print(token.type, token.value)
 
-# Caracteres ignorados (espacios y tabulaciones)
-t_ignore  = ' \t'
+    def test_with_file(self, path):
+        file = open(path)
+        content = file.read()
+        self.test(content)
 
-# Manejo de errores
-def t_error(t):
-    print("Carácter ilegal '%s'" % t.value[0])
-    t.lexer.skip(1)
 
-# Construir el lexer
-lexer = lex.lex()
-
-# Prueba de entrada
-data = '''
-10
-420
--12
--999
-0.1289
-12
--100.001
-10e-1
-1E10
-5E2
-4e-2
-0b101
-0B110110
-0712
-0332
-01121
-0XFED123
-0xAA
-0X1
-0x00F1
-"Hello, World!"
-identifier
-
-TR
-Fl
-tr
-fl
-NULL
-
-x >= y == z < 10
-
-{x: 10, y: 20}
-"{x: 10, y: 20}" 
-
-'''
-
-# Dar los datos al lexer
-lexer.input(data)
-
-# Tokenize
-for tok in lexer:
-    print(tok)

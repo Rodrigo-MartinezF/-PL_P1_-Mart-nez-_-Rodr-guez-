@@ -1,79 +1,543 @@
 Created by PLY version 3.11 (http://www.dabeaz.com/ply)
 
-Unused terminals:
-
-    BINARY
-    HEXNUM
-    ID
-    INTEGER
-    NONE
-    OCTAL
-    REAL
-    SCIENTIFIC
-
 Grammar
 
-Rule 0     S' -> inicio
-Rule 1     inicio -> ajson
-Rule 2     ajson -> LLAVE_APERTURA pares_clave_valor LLAVE_CIERRE
-Rule 3     ajson -> empty
-Rule 4     pares_clave_valor -> par_clave_valor
-Rule 5     pares_clave_valor -> par_clave_valor COMA pares_clave_valor
-Rule 6     pares_clave_valor -> empty
-Rule 7     par_clave_valor -> clave DOS_PUNTOS valor
-Rule 8     clave -> STRING_WITH_QUOTES
-Rule 9     clave -> STRING_WITHOUT_QUOTES
-Rule 10    valor -> NUMERO
-Rule 11    valor -> STRING_WITH_QUOTES
-Rule 12    valor -> BOOLEANO
-Rule 13    valor -> NULO
-Rule 14    valor -> operacion_comparacion
-Rule 15    valor -> ajson
-Rule 16    operacion_comparacion -> NUMERO IGUAL NUMERO
-Rule 17    operacion_comparacion -> NUMERO MAYOR NUMERO
-Rule 18    operacion_comparacion -> NUMERO MAYOR_IGUAL NUMERO
-Rule 19    operacion_comparacion -> NUMERO MENOR NUMERO
-Rule 20    operacion_comparacion -> NUMERO MENOR_IGUAL NUMERO
-Rule 21    BOOLEANO -> TRUE
-Rule 22    BOOLEANO -> FALSE
-Rule 23    empty -> <empty>
+Rule 0     S' -> start
+Rule 1     start -> object
+Rule 2     start -> empty
+Rule 3     object -> LLAVE_APERTURA pairs LLAVE_CIERRE
+Rule 4     object -> LLAVE_APERTURA LLAVE_CIERRE
+Rule 5     pairs -> pair
+Rule 6     pairs -> pair COMA pairs
+Rule 7     pair -> STRING_WITH_QUOTES DOS_PUNTOS value
+Rule 8     pair -> STRING_WITHOUT_QUOTES DOS_PUNTOS value
+Rule 9     value -> STRING_WITH_QUOTES
+Rule 10    value -> number
+Rule 11    value -> boolean
+Rule 12    value -> null
+Rule 13    value -> object
+Rule 14    value -> comparison_operation
+Rule 15    boolean -> TRUE
+Rule 16    boolean -> FALSE
+Rule 17    null -> NULL
+Rule 18    number -> INTEGER
+Rule 19    number -> REAL
+Rule 20    number -> SCIENTIFIC
+Rule 21    number -> BINARY
+Rule 22    number -> OCTAL
+Rule 23    number -> HEXNUM
+Rule 24    comparison_operation -> number comparison_operator number
+Rule 25    comparison_operator -> IGUAL
+Rule 26    comparison_operator -> MAYOR
+Rule 27    comparison_operator -> MAYOR_IGUAL
+Rule 28    comparison_operator -> MENOR
+Rule 29    comparison_operator -> MENOR_IGUAL
+Rule 30    empty -> <empty>
 
 Terminals, with rules where they appear
 
-BINARY               : 
-COMA                 : 5
-DOS_PUNTOS           : 7
-FALSE                : 22
-HEXNUM               : 
-ID                   : 
-IGUAL                : 16
-INTEGER              : 
-LLAVE_APERTURA       : 2
-LLAVE_CIERRE         : 2
-MAYOR                : 17
-MAYOR_IGUAL          : 18
-MENOR                : 19
-MENOR_IGUAL          : 20
-NONE                 : 
-OCTAL                : 
-REAL                 : 
-SCIENTIFIC           : 
-STRING_WITHOUT_QUOTES : 9
-STRING_WITH_QUOTES   : 8 11
-TRUE                 : 21
+BINARY               : 21
+COMA                 : 6
+DOS_PUNTOS           : 7 8
+FALSE                : 16
+HEXNUM               : 23
+IGUAL                : 25
+INTEGER              : 18
+LLAVE_APERTURA       : 3 4
+LLAVE_CIERRE         : 3 4
+MAYOR                : 26
+MAYOR_IGUAL          : 27
+MENOR                : 28
+MENOR_IGUAL          : 29
+NULL                 : 17
+OCTAL                : 22
+REAL                 : 19
+SCIENTIFIC           : 20
+STRING_WITHOUT_QUOTES : 8
+STRING_WITH_QUOTES   : 7 9
+TRUE                 : 15
 error                : 
 
 Nonterminals, with rules where they appear
 
-BOOLEANO             : 12
-NULO                 : 13
-NUMERO               : 10 16 16 17 17 18 18 19 19 20 20
-ajson                : 1 15
-clave                : 7
-empty                : 3 6
-inicio               : 0
-operacion_comparacion : 14
-par_clave_valor      : 4 5
-pares_clave_valor    : 2 5
-valor                : 7
+boolean              : 11
+comparison_operation : 14
+comparison_operator  : 24
+empty                : 2
+null                 : 12
+number               : 10 24 24
+object               : 1 13
+pair                 : 5 6
+pairs                : 3 6
+start                : 0
+value                : 7 8
+
+Parsing method: LALR
+
+state 0
+
+    (0) S' -> . start
+    (1) start -> . object
+    (2) start -> . empty
+    (3) object -> . LLAVE_APERTURA pairs LLAVE_CIERRE
+    (4) object -> . LLAVE_APERTURA LLAVE_CIERRE
+    (30) empty -> .
+
+    LLAVE_APERTURA  shift and go to state 4
+    $end            reduce using rule 30 (empty -> .)
+
+    start                          shift and go to state 1
+    object                         shift and go to state 2
+    empty                          shift and go to state 3
+
+state 1
+
+    (0) S' -> start .
+
+
+
+state 2
+
+    (1) start -> object .
+
+    $end            reduce using rule 1 (start -> object .)
+
+
+state 3
+
+    (2) start -> empty .
+
+    $end            reduce using rule 2 (start -> empty .)
+
+
+state 4
+
+    (3) object -> LLAVE_APERTURA . pairs LLAVE_CIERRE
+    (4) object -> LLAVE_APERTURA . LLAVE_CIERRE
+    (5) pairs -> . pair
+    (6) pairs -> . pair COMA pairs
+    (7) pair -> . STRING_WITH_QUOTES DOS_PUNTOS value
+    (8) pair -> . STRING_WITHOUT_QUOTES DOS_PUNTOS value
+
+    LLAVE_CIERRE    shift and go to state 6
+    STRING_WITH_QUOTES shift and go to state 8
+    STRING_WITHOUT_QUOTES shift and go to state 9
+
+    pairs                          shift and go to state 5
+    pair                           shift and go to state 7
+
+state 5
+
+    (3) object -> LLAVE_APERTURA pairs . LLAVE_CIERRE
+
+    LLAVE_CIERRE    shift and go to state 10
+
+
+state 6
+
+    (4) object -> LLAVE_APERTURA LLAVE_CIERRE .
+
+    $end            reduce using rule 4 (object -> LLAVE_APERTURA LLAVE_CIERRE .)
+    COMA            reduce using rule 4 (object -> LLAVE_APERTURA LLAVE_CIERRE .)
+    LLAVE_CIERRE    reduce using rule 4 (object -> LLAVE_APERTURA LLAVE_CIERRE .)
+
+
+state 7
+
+    (5) pairs -> pair .
+    (6) pairs -> pair . COMA pairs
+
+    LLAVE_CIERRE    reduce using rule 5 (pairs -> pair .)
+    COMA            shift and go to state 11
+
+
+state 8
+
+    (7) pair -> STRING_WITH_QUOTES . DOS_PUNTOS value
+
+    DOS_PUNTOS      shift and go to state 12
+
+
+state 9
+
+    (8) pair -> STRING_WITHOUT_QUOTES . DOS_PUNTOS value
+
+    DOS_PUNTOS      shift and go to state 13
+
+
+state 10
+
+    (3) object -> LLAVE_APERTURA pairs LLAVE_CIERRE .
+
+    $end            reduce using rule 3 (object -> LLAVE_APERTURA pairs LLAVE_CIERRE .)
+    COMA            reduce using rule 3 (object -> LLAVE_APERTURA pairs LLAVE_CIERRE .)
+    LLAVE_CIERRE    reduce using rule 3 (object -> LLAVE_APERTURA pairs LLAVE_CIERRE .)
+
+
+state 11
+
+    (6) pairs -> pair COMA . pairs
+    (5) pairs -> . pair
+    (6) pairs -> . pair COMA pairs
+    (7) pair -> . STRING_WITH_QUOTES DOS_PUNTOS value
+    (8) pair -> . STRING_WITHOUT_QUOTES DOS_PUNTOS value
+
+    STRING_WITH_QUOTES shift and go to state 8
+    STRING_WITHOUT_QUOTES shift and go to state 9
+
+    pair                           shift and go to state 7
+    pairs                          shift and go to state 14
+
+state 12
+
+    (7) pair -> STRING_WITH_QUOTES DOS_PUNTOS . value
+    (9) value -> . STRING_WITH_QUOTES
+    (10) value -> . number
+    (11) value -> . boolean
+    (12) value -> . null
+    (13) value -> . object
+    (14) value -> . comparison_operation
+    (18) number -> . INTEGER
+    (19) number -> . REAL
+    (20) number -> . SCIENTIFIC
+    (21) number -> . BINARY
+    (22) number -> . OCTAL
+    (23) number -> . HEXNUM
+    (15) boolean -> . TRUE
+    (16) boolean -> . FALSE
+    (17) null -> . NULL
+    (3) object -> . LLAVE_APERTURA pairs LLAVE_CIERRE
+    (4) object -> . LLAVE_APERTURA LLAVE_CIERRE
+    (24) comparison_operation -> . number comparison_operator number
+
+    STRING_WITH_QUOTES shift and go to state 15
+    INTEGER         shift and go to state 22
+    REAL            shift and go to state 23
+    SCIENTIFIC      shift and go to state 24
+    BINARY          shift and go to state 25
+    OCTAL           shift and go to state 26
+    HEXNUM          shift and go to state 27
+    TRUE            shift and go to state 28
+    FALSE           shift and go to state 29
+    NULL            shift and go to state 30
+    LLAVE_APERTURA  shift and go to state 4
+
+    value                          shift and go to state 16
+    number                         shift and go to state 17
+    boolean                        shift and go to state 18
+    null                           shift and go to state 19
+    object                         shift and go to state 20
+    comparison_operation           shift and go to state 21
+
+state 13
+
+    (8) pair -> STRING_WITHOUT_QUOTES DOS_PUNTOS . value
+    (9) value -> . STRING_WITH_QUOTES
+    (10) value -> . number
+    (11) value -> . boolean
+    (12) value -> . null
+    (13) value -> . object
+    (14) value -> . comparison_operation
+    (18) number -> . INTEGER
+    (19) number -> . REAL
+    (20) number -> . SCIENTIFIC
+    (21) number -> . BINARY
+    (22) number -> . OCTAL
+    (23) number -> . HEXNUM
+    (15) boolean -> . TRUE
+    (16) boolean -> . FALSE
+    (17) null -> . NULL
+    (3) object -> . LLAVE_APERTURA pairs LLAVE_CIERRE
+    (4) object -> . LLAVE_APERTURA LLAVE_CIERRE
+    (24) comparison_operation -> . number comparison_operator number
+
+    STRING_WITH_QUOTES shift and go to state 15
+    INTEGER         shift and go to state 22
+    REAL            shift and go to state 23
+    SCIENTIFIC      shift and go to state 24
+    BINARY          shift and go to state 25
+    OCTAL           shift and go to state 26
+    HEXNUM          shift and go to state 27
+    TRUE            shift and go to state 28
+    FALSE           shift and go to state 29
+    NULL            shift and go to state 30
+    LLAVE_APERTURA  shift and go to state 4
+
+    value                          shift and go to state 31
+    number                         shift and go to state 17
+    boolean                        shift and go to state 18
+    null                           shift and go to state 19
+    object                         shift and go to state 20
+    comparison_operation           shift and go to state 21
+
+state 14
+
+    (6) pairs -> pair COMA pairs .
+
+    LLAVE_CIERRE    reduce using rule 6 (pairs -> pair COMA pairs .)
+
+
+state 15
+
+    (9) value -> STRING_WITH_QUOTES .
+
+    COMA            reduce using rule 9 (value -> STRING_WITH_QUOTES .)
+    LLAVE_CIERRE    reduce using rule 9 (value -> STRING_WITH_QUOTES .)
+
+
+state 16
+
+    (7) pair -> STRING_WITH_QUOTES DOS_PUNTOS value .
+
+    COMA            reduce using rule 7 (pair -> STRING_WITH_QUOTES DOS_PUNTOS value .)
+    LLAVE_CIERRE    reduce using rule 7 (pair -> STRING_WITH_QUOTES DOS_PUNTOS value .)
+
+
+state 17
+
+    (10) value -> number .
+    (24) comparison_operation -> number . comparison_operator number
+    (25) comparison_operator -> . IGUAL
+    (26) comparison_operator -> . MAYOR
+    (27) comparison_operator -> . MAYOR_IGUAL
+    (28) comparison_operator -> . MENOR
+    (29) comparison_operator -> . MENOR_IGUAL
+
+    COMA            reduce using rule 10 (value -> number .)
+    LLAVE_CIERRE    reduce using rule 10 (value -> number .)
+    IGUAL           shift and go to state 33
+    MAYOR           shift and go to state 34
+    MAYOR_IGUAL     shift and go to state 35
+    MENOR           shift and go to state 36
+    MENOR_IGUAL     shift and go to state 37
+
+    comparison_operator            shift and go to state 32
+
+state 18
+
+    (11) value -> boolean .
+
+    COMA            reduce using rule 11 (value -> boolean .)
+    LLAVE_CIERRE    reduce using rule 11 (value -> boolean .)
+
+
+state 19
+
+    (12) value -> null .
+
+    COMA            reduce using rule 12 (value -> null .)
+    LLAVE_CIERRE    reduce using rule 12 (value -> null .)
+
+
+state 20
+
+    (13) value -> object .
+
+    COMA            reduce using rule 13 (value -> object .)
+    LLAVE_CIERRE    reduce using rule 13 (value -> object .)
+
+
+state 21
+
+    (14) value -> comparison_operation .
+
+    COMA            reduce using rule 14 (value -> comparison_operation .)
+    LLAVE_CIERRE    reduce using rule 14 (value -> comparison_operation .)
+
+
+state 22
+
+    (18) number -> INTEGER .
+
+    IGUAL           reduce using rule 18 (number -> INTEGER .)
+    MAYOR           reduce using rule 18 (number -> INTEGER .)
+    MAYOR_IGUAL     reduce using rule 18 (number -> INTEGER .)
+    MENOR           reduce using rule 18 (number -> INTEGER .)
+    MENOR_IGUAL     reduce using rule 18 (number -> INTEGER .)
+    COMA            reduce using rule 18 (number -> INTEGER .)
+    LLAVE_CIERRE    reduce using rule 18 (number -> INTEGER .)
+
+
+state 23
+
+    (19) number -> REAL .
+
+    IGUAL           reduce using rule 19 (number -> REAL .)
+    MAYOR           reduce using rule 19 (number -> REAL .)
+    MAYOR_IGUAL     reduce using rule 19 (number -> REAL .)
+    MENOR           reduce using rule 19 (number -> REAL .)
+    MENOR_IGUAL     reduce using rule 19 (number -> REAL .)
+    COMA            reduce using rule 19 (number -> REAL .)
+    LLAVE_CIERRE    reduce using rule 19 (number -> REAL .)
+
+
+state 24
+
+    (20) number -> SCIENTIFIC .
+
+    IGUAL           reduce using rule 20 (number -> SCIENTIFIC .)
+    MAYOR           reduce using rule 20 (number -> SCIENTIFIC .)
+    MAYOR_IGUAL     reduce using rule 20 (number -> SCIENTIFIC .)
+    MENOR           reduce using rule 20 (number -> SCIENTIFIC .)
+    MENOR_IGUAL     reduce using rule 20 (number -> SCIENTIFIC .)
+    COMA            reduce using rule 20 (number -> SCIENTIFIC .)
+    LLAVE_CIERRE    reduce using rule 20 (number -> SCIENTIFIC .)
+
+
+state 25
+
+    (21) number -> BINARY .
+
+    IGUAL           reduce using rule 21 (number -> BINARY .)
+    MAYOR           reduce using rule 21 (number -> BINARY .)
+    MAYOR_IGUAL     reduce using rule 21 (number -> BINARY .)
+    MENOR           reduce using rule 21 (number -> BINARY .)
+    MENOR_IGUAL     reduce using rule 21 (number -> BINARY .)
+    COMA            reduce using rule 21 (number -> BINARY .)
+    LLAVE_CIERRE    reduce using rule 21 (number -> BINARY .)
+
+
+state 26
+
+    (22) number -> OCTAL .
+
+    IGUAL           reduce using rule 22 (number -> OCTAL .)
+    MAYOR           reduce using rule 22 (number -> OCTAL .)
+    MAYOR_IGUAL     reduce using rule 22 (number -> OCTAL .)
+    MENOR           reduce using rule 22 (number -> OCTAL .)
+    MENOR_IGUAL     reduce using rule 22 (number -> OCTAL .)
+    COMA            reduce using rule 22 (number -> OCTAL .)
+    LLAVE_CIERRE    reduce using rule 22 (number -> OCTAL .)
+
+
+state 27
+
+    (23) number -> HEXNUM .
+
+    IGUAL           reduce using rule 23 (number -> HEXNUM .)
+    MAYOR           reduce using rule 23 (number -> HEXNUM .)
+    MAYOR_IGUAL     reduce using rule 23 (number -> HEXNUM .)
+    MENOR           reduce using rule 23 (number -> HEXNUM .)
+    MENOR_IGUAL     reduce using rule 23 (number -> HEXNUM .)
+    COMA            reduce using rule 23 (number -> HEXNUM .)
+    LLAVE_CIERRE    reduce using rule 23 (number -> HEXNUM .)
+
+
+state 28
+
+    (15) boolean -> TRUE .
+
+    COMA            reduce using rule 15 (boolean -> TRUE .)
+    LLAVE_CIERRE    reduce using rule 15 (boolean -> TRUE .)
+
+
+state 29
+
+    (16) boolean -> FALSE .
+
+    COMA            reduce using rule 16 (boolean -> FALSE .)
+    LLAVE_CIERRE    reduce using rule 16 (boolean -> FALSE .)
+
+
+state 30
+
+    (17) null -> NULL .
+
+    COMA            reduce using rule 17 (null -> NULL .)
+    LLAVE_CIERRE    reduce using rule 17 (null -> NULL .)
+
+
+state 31
+
+    (8) pair -> STRING_WITHOUT_QUOTES DOS_PUNTOS value .
+
+    COMA            reduce using rule 8 (pair -> STRING_WITHOUT_QUOTES DOS_PUNTOS value .)
+    LLAVE_CIERRE    reduce using rule 8 (pair -> STRING_WITHOUT_QUOTES DOS_PUNTOS value .)
+
+
+state 32
+
+    (24) comparison_operation -> number comparison_operator . number
+    (18) number -> . INTEGER
+    (19) number -> . REAL
+    (20) number -> . SCIENTIFIC
+    (21) number -> . BINARY
+    (22) number -> . OCTAL
+    (23) number -> . HEXNUM
+
+    INTEGER         shift and go to state 22
+    REAL            shift and go to state 23
+    SCIENTIFIC      shift and go to state 24
+    BINARY          shift and go to state 25
+    OCTAL           shift and go to state 26
+    HEXNUM          shift and go to state 27
+
+    number                         shift and go to state 38
+
+state 33
+
+    (25) comparison_operator -> IGUAL .
+
+    INTEGER         reduce using rule 25 (comparison_operator -> IGUAL .)
+    REAL            reduce using rule 25 (comparison_operator -> IGUAL .)
+    SCIENTIFIC      reduce using rule 25 (comparison_operator -> IGUAL .)
+    BINARY          reduce using rule 25 (comparison_operator -> IGUAL .)
+    OCTAL           reduce using rule 25 (comparison_operator -> IGUAL .)
+    HEXNUM          reduce using rule 25 (comparison_operator -> IGUAL .)
+
+
+state 34
+
+    (26) comparison_operator -> MAYOR .
+
+    INTEGER         reduce using rule 26 (comparison_operator -> MAYOR .)
+    REAL            reduce using rule 26 (comparison_operator -> MAYOR .)
+    SCIENTIFIC      reduce using rule 26 (comparison_operator -> MAYOR .)
+    BINARY          reduce using rule 26 (comparison_operator -> MAYOR .)
+    OCTAL           reduce using rule 26 (comparison_operator -> MAYOR .)
+    HEXNUM          reduce using rule 26 (comparison_operator -> MAYOR .)
+
+
+state 35
+
+    (27) comparison_operator -> MAYOR_IGUAL .
+
+    INTEGER         reduce using rule 27 (comparison_operator -> MAYOR_IGUAL .)
+    REAL            reduce using rule 27 (comparison_operator -> MAYOR_IGUAL .)
+    SCIENTIFIC      reduce using rule 27 (comparison_operator -> MAYOR_IGUAL .)
+    BINARY          reduce using rule 27 (comparison_operator -> MAYOR_IGUAL .)
+    OCTAL           reduce using rule 27 (comparison_operator -> MAYOR_IGUAL .)
+    HEXNUM          reduce using rule 27 (comparison_operator -> MAYOR_IGUAL .)
+
+
+state 36
+
+    (28) comparison_operator -> MENOR .
+
+    INTEGER         reduce using rule 28 (comparison_operator -> MENOR .)
+    REAL            reduce using rule 28 (comparison_operator -> MENOR .)
+    SCIENTIFIC      reduce using rule 28 (comparison_operator -> MENOR .)
+    BINARY          reduce using rule 28 (comparison_operator -> MENOR .)
+    OCTAL           reduce using rule 28 (comparison_operator -> MENOR .)
+    HEXNUM          reduce using rule 28 (comparison_operator -> MENOR .)
+
+
+state 37
+
+    (29) comparison_operator -> MENOR_IGUAL .
+
+    INTEGER         reduce using rule 29 (comparison_operator -> MENOR_IGUAL .)
+    REAL            reduce using rule 29 (comparison_operator -> MENOR_IGUAL .)
+    SCIENTIFIC      reduce using rule 29 (comparison_operator -> MENOR_IGUAL .)
+    BINARY          reduce using rule 29 (comparison_operator -> MENOR_IGUAL .)
+    OCTAL           reduce using rule 29 (comparison_operator -> MENOR_IGUAL .)
+    HEXNUM          reduce using rule 29 (comparison_operator -> MENOR_IGUAL .)
+
+
+state 38
+
+    (24) comparison_operation -> number comparison_operator number .
+
+    COMA            reduce using rule 24 (comparison_operation -> number comparison_operator number .)
+    LLAVE_CIERRE    reduce using rule 24 (comparison_operation -> number comparison_operator number .)
 
